@@ -1,5 +1,5 @@
 IMAGE=acoshift/cachestatic-backend
-TAG=1.0.0
+TAG=1.1.0
 GOLANG_VERSION=1.8
 REPO=github.com/acoshift/cachestatic-backend
 
