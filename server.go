@@ -27,6 +27,9 @@ func main() {
 	}
 	h := cachestatic.New(cachestatic.Config{
 		Skipper: func(r *http.Request) bool {
+			if r.Method != http.MethodGet {
+				return true
+			}
 			for _, p := range exclude {
 				if strings.HasPrefix(r.URL.Path, p) {
 					return true
