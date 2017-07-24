@@ -6,7 +6,6 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
-
 	"strings"
 
 	"github.com/acoshift/cachestatic"
@@ -18,13 +17,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	var exclude map[string]struct{}
-	{
-		ps := strings.Split(os.Getenv("exclude"), "||")
-		for _, p := range ps {
-			exclude[p] = struct{}{}
-		}
-	}
+	exclude := strings.Split(os.Getenv("exclude"), "||")
 
 	r := httputil.NewSingleHostReverseProxy(u)
 	r.ModifyResponse = func(resp *http.Response) error {
@@ -34,8 +27,10 @@ func main() {
 	}
 	h := cachestatic.New(cachestatic.Config{
 		Skipper: func(r *http.Request) bool {
-			if _, ok := exclude[r.URL.Path]; ok {
-				return true
+			for _, p := range exclude {
+				if strings.HasPrefix(r.URL.Path, p) {
+					return true
+				}
 			}
 			return false
 		},
